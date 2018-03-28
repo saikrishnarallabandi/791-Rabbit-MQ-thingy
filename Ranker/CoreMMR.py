@@ -31,17 +31,18 @@ class CoreMMR(BiRanker):
         similarity = SimilarityJaccard()
         # class method from abstract class that tokenizes all the snippets to sentences.
         sentences = self.getSentences(question)
+        tokenized_sentences = self.getTokenizedSentences(question)
         for i in range(self.numSelectedSentences):
             best_sim = -99999999
-            for sentence in sentences:
+            for (sentence,tokenized_sentence) in zip(sentences,tokenized_sentences):
                 # similarityJaccard is an extension of Similarity Measure that takes 2 sentences ansd returns the float (similarity)
                 # similarityInstance = SimilarityJaccard(sentence, question['body'])
                 # ques_sim = similarityInstance.calculateSimilarity()
-                ques_sim = similarity.calculateSimilarity(sentence, question.body)
+                ques_sim = similarity.calculateTokeninzedSimilarity(tokenized_sentence, question.body)
                 max_sent_sim = -99999999
                 for other in best:
                     # similarityInstance = SimilarityJaccard(sentence, other)
-                    sim = similarity.calculateSimilarity(sentence, other)
+                    sim = similarity.calculateTokenizedSimilarity(tokenized_sentence, other)
                     if self.beta != 0:
                         try:
                             # current_sent_sim = (self.beta*similarityInstance.calculateSimilarity())+((1-self.beta)*self.pos_dict[sentence])

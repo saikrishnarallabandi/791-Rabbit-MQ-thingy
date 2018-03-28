@@ -29,6 +29,8 @@ class BiRanker(Task):
         self.alpha = alpha
         self.numSelectedSentences = selected
         self.logger.info('Created Task for %s', self.__class__.__name__)
+        self.stopWords = set(stopwords.words('english'))
+
 
     def perform(self, input):
         self.logger.info("Input received from route %s", self.route)
@@ -68,6 +70,23 @@ class BiRanker(Task):
             except:
                 sentences += text.split(". ")  # Notice the space after the dot
         return sentences
+
+    def getTokenizedSentences(self, question):
+        self.logger.debug('Getting sentences for question %s', question.id)
+        tokenized_sentences = []
+        # snippetsText = []
+        for snippet in question.snippets: #['snippets']:
+            text = unicode(snippet.text).encode("ascii", "ignore")
+            # snippetsText.append(text)
+            if text == "":
+                continue
+            try:
+                text = sent_tokenize(text)
+                tokenized_sentences += set([i.lower() for i in word_tokenize(text) if i.lower() not in self.stopWords])
+            except:
+                text = text.split(". ")  # Notice the space after the dot
+                tokenized_sentences += set([i.lower() for i in word_tokenize(text) if i.lower() not in self.stopWords])
+        return tokenized_sentences
 
     def computePositions(self, snippets):
         pos_dict = {}

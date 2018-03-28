@@ -28,6 +28,11 @@ class SimilarityJaccard(object):
         set2 = set([i.lower() for i in word_tokenize(s2) if i.lower() not in self.stopWords])
         return float(len(set1.intersection(set2))) / len(set1.union(set2))
 
+    def calculateTokenizedSimilarity(self, ts1, s2):
+        set1 = ts1 
+        set2 = set([i.lower() for i in word_tokenize(s2) if i.lower() not in self.stopWords])
+        return float(len(set1.intersection(set2))) / len(set1.union(set2))
+
 
 """
 instance = SimilarityJaccard("apple banana cat dog", "apple elephant cat dog")
